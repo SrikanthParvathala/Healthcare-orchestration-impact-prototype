@@ -1,0 +1,1392 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Srikanth for Hippocratic AI — Orchestration Impact Prototype</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@500;600&display=swap"
+    rel="stylesheet">
+  <style>
+    /* ---- dark mode (default) ---- */
+    :root {
+      --bg: #0D1117;
+      --bg-raised: #141B24;
+      --ink: #E8ECF1;
+      --ink-strong: #FFFFFF;
+      --muted: #8B95A3;
+      --subtle: #5f6b7a;
+      --line: #232B36;
+      --teal: #2FB99A;
+      --teal-soft: rgba(47, 185, 154, 0.12);
+      --amber: #D3924C;
+      --amber-soft: rgba(211, 146, 76, 0.12);
+      --cta-primary-text: #06231c;
+    }
+
+    /* ---- light mode ---- */
+    [data-theme="light"] {
+      --bg: #F7F8FA;
+      --bg-raised: #FFFFFF;
+      --ink: #1B2430;
+      --ink-strong: #0D1117;
+      --muted: #5B6472;
+      --subtle: #7a8490;
+      --line: #DCE0E5;
+      --teal: #1A8A70;
+      --teal-soft: rgba(31, 138, 112, 0.10);
+      --amber: #9A6020;
+      --amber-soft: rgba(184, 117, 43, 0.10);
+      --cta-primary-text: #ffffff;
+    }
+
+    /* ---- theme toggle button ---- */
+    #themeToggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: transparent;
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 5px 12px;
+      font-size: 12.5px;
+      color: var(--muted);
+      cursor: pointer;
+      font-family: 'Inter', sans-serif;
+      transition: border-color 0.2s, color 0.2s, background 0.2s;
+      white-space: nowrap;
+    }
+    #themeToggle:hover {
+      border-color: var(--teal);
+      color: var(--teal);
+    }
+    #themeToggle .t-icon { font-size: 14px; line-height: 1; }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: 'Inter', sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    h1,
+    h2,
+    h3,
+    .display {
+      font-family: 'Space Grotesk', sans-serif;
+      letter-spacing: -0.01em;
+      margin: 0;
+    }
+
+    .mono {
+      font-family: 'IBM Plex Mono', monospace;
+    }
+
+    .wrap {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    a {
+      color: var(--teal);
+    }
+
+    /* ---------------- top nav ---------------- */
+    header.top {
+      position: sticky;
+      top: 0;
+      z-index: 30;
+      background: rgba(13, 17, 23, 0.85);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .top-inner {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 0;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .brand {
+      font-size: 14.5px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .brand .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--teal);
+    }
+
+    .navlinks {
+      display: flex;
+      gap: 22px;
+    }
+
+    .navlinks a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 13px;
+    }
+
+    .navlinks a:hover {
+      color: var(--ink);
+    }
+
+    /* ---------------- hero ---------------- */
+    .hero {
+      padding: 88px 0 56px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 6px 14px;
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 24px;
+    }
+
+    .badge .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--teal);
+    }
+
+    .hero h1 {
+      font-size: 40px;
+      line-height: 1.18;
+      max-width: 760px;
+      color: var(--ink-strong);
+    }
+
+    .hero p.sub {
+      font-size: 16px;
+      color: var(--muted);
+      max-width: 620px;
+      line-height: 1.65;
+      margin-top: 20px;
+    }
+
+    .cta-row {
+      display: flex;
+      gap: 12px;
+      margin-top: 32px;
+      flex-wrap: wrap;
+    }
+
+    .cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 11px 20px;
+      border-radius: 6px;
+      font-size: 14px;
+      text-decoration: none;
+      font-family: 'Inter', sans-serif;
+      cursor: pointer;
+      border: 1px solid transparent;
+    }
+
+    .cta.primary {
+      background: var(--teal);
+      color: var(--cta-primary-text);
+      font-weight: 600;
+    }
+
+    .cta.primary:hover {
+      opacity: 0.9;
+    }
+
+    .cta.ghost {
+      border-color: var(--line);
+      color: var(--ink);
+    }
+
+    .cta.ghost:hover {
+      border-color: var(--teal);
+      color: var(--teal);
+    }
+
+    .quote-block {
+      margin-top: 40px;
+      padding-left: 18px;
+      border-left: 2px solid var(--teal);
+      font-size: 14.5px;
+      color: var(--muted);
+      max-width: 600px;
+      line-height: 1.6;
+    }
+
+    .quote-block strong {
+      color: var(--ink);
+      font-weight: 500;
+    }
+
+    /* ---------------- generic section ---------------- */
+    section.block {
+      padding: 64px 0;
+      border-top: 1px solid var(--line);
+    }
+
+    .eyebrow {
+      font-size: 12.5px;
+      color: var(--teal);
+      margin-bottom: 10px;
+    }
+
+    .block h2 {
+      font-size: 27px;
+      color: var(--ink-strong);
+      max-width: 640px;
+    }
+
+    .block p.lead {
+      font-size: 15px;
+      color: var(--muted);
+      max-width: 620px;
+      line-height: 1.7;
+      margin-top: 14px;
+    }
+
+    /* ---------------- prototype frame ---------------- */
+    .browser-frame {
+      margin-top: 36px;
+      border-radius: 10px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      box-shadow: 0 30px 60px -20px rgba(0, 0, 0, 0.5);
+    }
+
+    .browser-chrome {
+      background: var(--bg-raised);
+      padding: 10px 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .browser-chrome .dots {
+      display: flex;
+      gap: 6px;
+    }
+
+    .browser-chrome .dots span {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: #333d49;
+    }
+
+    .browser-chrome .address {
+      margin-left: 10px;
+      background: var(--bg);
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      padding: 4px 10px;
+      font-size: 11.5px;
+      color: var(--muted);
+      font-family: 'IBM Plex Mono', monospace;
+    }
+
+    #embedApp {
+      background: #F6F5F1;
+      max-height: 640px;
+      overflow-y: auto;
+    }
+
+    /* ---------------- three-column mini cards (numbered) ---------------- */
+    .trio {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 16px;
+      margin-top: 36px;
+    }
+
+    .trio-card {
+      border: 1px solid var(--line);
+      background: var(--bg-raised);
+      border-radius: 8px;
+      padding: 22px 22px 20px;
+    }
+
+    .trio-card h3 {
+      font-size: 15.5px;
+      color: var(--ink-strong);
+      margin-bottom: 6px;
+    }
+
+    .trio-card p.desc {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.6;
+      margin: 0 0 14px;
+    }
+
+    .trio-card ol {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 9px;
+    }
+
+    .trio-card ol li {
+      display: flex;
+      gap: 10px;
+      font-size: 13px;
+      color: var(--ink);
+      line-height: 1.5;
+    }
+
+    .trio-card ol li .num {
+      color: var(--teal);
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 12px;
+      flex-shrink: 0;
+    }
+
+    /* ---------------- process steps ---------------- */
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 20px;
+      margin-top: 36px;
+      counter-reset: step;
+    }
+
+    .step {
+      position: relative;
+      padding-left: 6px;
+    }
+
+    .step .num {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 13px;
+      color: var(--teal);
+      border: 1px solid var(--teal);
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 14px;
+    }
+
+    .step h3 {
+      font-size: 15px;
+      color: var(--ink-strong);
+      margin-bottom: 6px;
+    }
+
+    .step p {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.6;
+      margin: 0;
+    }
+
+    /* ---------------- why me stat cards ---------------- */
+    .whyme-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 16px;
+      margin-top: 36px;
+    }
+
+    .stat-card {
+      border: 1px solid var(--line);
+      background: var(--bg-raised);
+      border-radius: 8px;
+      padding: 24px;
+    }
+
+    .stat-card .stat {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 26px;
+      color: var(--teal);
+      margin-bottom: 8px;
+    }
+
+    .stat-card p {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.6;
+      margin: 0;
+    }
+
+    .editable {
+      color: var(--subtle);
+      font-style: italic;
+    }
+
+    /* ---------------- contact ---------------- */
+    .contact-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 24px;
+      flex-wrap: wrap;
+      align-items: flex-end;
+      margin-top: 28px;
+    }
+
+    .contact-name {
+      font-size: 20px;
+      color: var(--ink-strong);
+      font-family: 'Space Grotesk', sans-serif;
+      margin-bottom: 10px;
+    }
+
+    .contact-links {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      font-size: 14px;
+    }
+
+    .contact-links a {
+      text-decoration: none;
+    }
+
+    .avatar-badge {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      background: var(--teal-soft);
+      color: var(--teal);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 16px;
+      border: 1px solid var(--line);
+    }
+
+    footer.principle {
+      border-top: 1px solid var(--line);
+      padding: 32px 0 48px;
+    }
+
+    footer.principle .principle-label {
+      font-size: 11.5px;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+
+    footer.principle .principle-text {
+      font-size: 15px;
+      color: var(--ink);
+      max-width: 520px;
+      line-height: 1.5;
+    }
+
+    @media (max-width:640px) {
+      .hero h1 {
+        font-size: 30px;
+      }
+
+      .navlinks {
+        display: none;
+      }
+    }
+
+    /* =========================================================
+     EMBEDDED DASHBOARD (scoped entirely under #embedApp)
+     ========================================================= */
+    #embedApp {
+      --e-bg: #F6F5F1;
+      --e-surface: #FFFFFF;
+      --e-ink: #1B2430;
+      --e-muted: #5B6472;
+      --e-line: #DCE0E5;
+      --e-navy: #12233B;
+      --e-teal: #1F8A70;
+      --e-teal-soft: #E4F2EE;
+      --e-amber: #B8752B;
+      font-family: 'Inter', sans-serif;
+      color: var(--e-ink);
+    }
+
+    #embedApp .e-wrap {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 20px 22px 32px;
+    }
+
+    #embedApp h1,
+    #embedApp h2,
+    #embedApp h3 {
+      font-family: 'Space Grotesk', sans-serif;
+      margin: 0;
+    }
+
+    #embedApp .e-tabs {
+      display: flex;
+      gap: 4px;
+      flex-wrap: wrap;
+      margin-bottom: 18px;
+    }
+
+    #embedApp .e-tabs button {
+      background: transparent;
+      border: 1px solid var(--e-line);
+      cursor: pointer;
+      padding: 6px 12px;
+      font-size: 12.5px;
+      color: var(--e-muted);
+      font-family: 'Inter', sans-serif;
+      border-radius: 5px;
+    }
+
+    #embedApp .e-tabs button.active {
+      background: var(--e-navy);
+      color: var(--ink-strong);
+      border-color: var(--e-navy);
+    }
+
+    #embedApp .e-controls {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      flex-wrap: wrap;
+      border: 1px solid var(--e-line);
+      background: var(--e-surface);
+      border-radius: 6px;
+      padding: 12px 16px;
+      margin-bottom: 18px;
+    }
+
+    #embedApp .e-controls label {
+      font-size: 12px;
+      color: var(--e-muted);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    #embedApp .e-controls input[type=range] {
+      width: 130px;
+      accent-color: var(--e-navy);
+    }
+
+    #embedApp .e-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--e-navy);
+      color: var(--ink-strong);
+      border: none;
+      border-radius: 5px;
+      padding: 7px 13px;
+      font-size: 12.5px;
+      cursor: pointer;
+      font-family: 'Inter', sans-serif;
+    }
+
+    #embedApp .e-meta {
+      font-size: 11.5px;
+      color: var(--e-muted);
+    }
+
+    #embedApp .e-kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    #embedApp .e-card {
+      border: 1px solid var(--e-line);
+      background: var(--e-surface);
+      border-radius: 6px;
+      padding: 15px 16px;
+    }
+
+    #embedApp .e-kpi-label {
+      font-size: 12px;
+      color: var(--e-muted);
+      margin-bottom: 10px;
+    }
+
+    #embedApp .e-kpi-values {
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+    }
+
+    #embedApp .e-kpi-col .e-tag {
+      font-size: 10.5px;
+      margin-bottom: 2px;
+    }
+
+    #embedApp .e-kpi-col.naive .e-tag {
+      color: var(--e-amber);
+    }
+
+    #embedApp .e-kpi-col.orch .e-tag {
+      color: var(--e-teal);
+    }
+
+    #embedApp .e-kpi-num {
+      font-size: 21px;
+      font-family: 'IBM Plex Mono', monospace;
+    }
+
+    #embedApp .e-arrow {
+      color: var(--e-line);
+      font-size: 16px;
+    }
+
+    #embedApp .e-kpi-delta {
+      margin-top: 10px;
+      font-size: 11.5px;
+    }
+
+    #embedApp .e-kpi-delta.good {
+      color: var(--e-teal);
+    }
+
+    #embedApp .e-kpi-delta.bad {
+      color: var(--e-amber);
+    }
+
+    #embedApp .e-chart-card {
+      border: 1px solid var(--e-line);
+      background: var(--e-surface);
+      border-radius: 6px;
+      padding: 16px 16px 10px;
+      margin-bottom: 14px;
+    }
+
+    #embedApp .e-chart-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 14.5px;
+      margin-bottom: 2px;
+    }
+
+    #embedApp .e-chart-sub {
+      font-size: 11.5px;
+      color: var(--e-muted);
+      margin-bottom: 10px;
+      max-width: 560px;
+      line-height: 1.5;
+    }
+
+    #embedApp .e-legend {
+      display: flex;
+      gap: 14px;
+      font-size: 11px;
+      color: var(--e-muted);
+      margin-top: 4px;
+    }
+
+    #embedApp .e-legend span {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    #embedApp .e-swatch {
+      width: 9px;
+      height: 9px;
+      border-radius: 2px;
+      display: inline-block;
+    }
+
+    #embedApp .e-chips {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-bottom: 14px;
+    }
+
+    #embedApp .e-chip {
+      border: 1px solid var(--e-line);
+      background: var(--e-surface);
+      border-radius: 16px;
+      padding: 5px 12px;
+      font-size: 11.5px;
+      color: var(--e-muted);
+      cursor: pointer;
+    }
+
+    #embedApp .e-chip.active {
+      background: var(--e-navy);
+      color: var(--ink-strong);
+      border-color: var(--e-navy);
+    }
+
+    #embedApp table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 11.5px;
+    }
+
+    #embedApp th {
+      text-align: left;
+      color: var(--e-muted);
+      font-weight: 500;
+      padding: 6px 7px;
+      border-bottom: 1px solid var(--e-line);
+      white-space: nowrap;
+    }
+
+    #embedApp td {
+      padding: 6px 7px;
+      border-bottom: 1px solid var(--e-line);
+      white-space: nowrap;
+    }
+
+    #embedApp .e-table-wrap {
+      overflow-x: auto;
+    }
+
+    #embedApp .e-section {
+      display: none;
+    }
+
+    #embedApp .e-section.active {
+      display: block;
+    }
+
+    #embedApp .e-insight {
+      border-left: 3px solid var(--e-teal);
+      background: var(--e-teal-soft);
+      padding: 10px 14px;
+      font-size: 12px;
+      border-radius: 0 6px 6px 0;
+      margin: 12px 0;
+      line-height: 1.55;
+    }
+
+    #embedApp .e-method p {
+      margin: 0 0 10px;
+      font-size: 12px;
+      color: var(--e-muted);
+      line-height: 1.65;
+    }
+  </style>
+</head>
+
+<body>
+
+  <header class="top">
+    <div class="wrap top-inner">
+      <div class="brand"><span class="dot"></span> Srikanth · for Hippocratic AI</div>
+      <div style="display:flex;align-items:center;gap:18px;">
+        <nav class="navlinks">
+          <a href="#prototype">Prototype</a>
+          <a href="#built">What I built</a>
+          <a href="#process">How it works</a>
+          <a href="#whyme">Why me</a>
+          <a href="#contact">Contact</a>
+        </nav>
+        <button id="themeToggle" aria-label="Toggle dark/light mode">
+          <span class="t-icon" id="themeIcon">🌙</span>
+          <span id="themeLabel">Light</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div class="wrap">
+
+    <!-- HERO -->
+    <section class="hero">
+      <div class="badge"><span class="dot"></span> Research-led · Agentic orchestration · Data prototype</div>
+      <h1>Does routing patients to the right agent actually move healthcare outcomes?</h1>
+      <p class="sub">A working analytics prototype built after digging into Hippocratic AI's shift from single voice
+        agents to coordinated Agentic Orchestrators — the kind of "outcomes, not tasks" question a data team gets asked
+        to answer with evidence, not a hunch.</p>
+      <div class="cta-row">
+        <a class="cta primary" href="#prototype">See the prototype</a>
+        <a class="cta ghost" href="#process">How it works</a>
+      </div>
+      <div class="quote-block">"We're not just building agents anymore. We're building orchestrations of multiple
+        agents, all to solve problems at health systems, at payers and at pharma companies." <strong>— Munjal Shah, CEO
+          &amp; Co-founder, Hippocratic AI</strong></div>
+    </section>
+
+    <!-- PROBLEM -->
+    <section class="block" id="problem">
+      <div class="eyebrow">Prototype problem statement</div>
+      <h2>Orchestration is easy to claim, hard to prove</h2>
+      <p class="lead">In August 2026, Hippocratic AI moved from selling individual voice agents to selling <em>Agentic
+          Orchestrators</em> — teams of agents coordinated to move outcomes like readmission rates, HEDIS measures, and
+        Star Ratings across a whole population. That's a much bigger claim than "the agent completed the call," and it
+        raises a data problem underneath the product story: how do you actually measure whether the coordination layer
+        is earning its keep, and how do you trust the patient data it's making decisions from in the first place?</p>
+      <p class="lead">This prototype tackles the first half of that question directly: a synthetic simulation that
+        compares a naive, random agent-assignment policy against a simplified orchestrated one, on the same population,
+        so the lift is measurable rather than assumed.</p>
+    </section>
+
+    <!-- PROTOTYPE (live embed) -->
+    <section class="block" id="prototype">
+      <div class="eyebrow">Live prototype</div>
+      <h2>Naive vs. orchestrated outreach, side by side</h2>
+      <p class="lead">Everything below runs client-side against a synthetic patient cohort — adjust the population size,
+        regenerate it, and switch tabs to explore risk tiers, contact channels, agent mix, and individual records.</p>
+
+      <div class="browser-frame">
+        <div class="browser-chrome">
+          <div class="dots"><span></span><span></span><span></span></div>
+          <div class="address">orchestration-impact.local</div>
+        </div>
+        <div id="embedApp"><!-- embedded dashboard renders here --></div>
+      </div>
+    </section>
+
+    <!-- WHAT I BUILT -->
+    <section class="block" id="built">
+      <div class="eyebrow">What I built</div>
+      <h2>The prototype shows how I close gaps in the data, not just the code</h2>
+      <p class="lead">Research depth, honest framing of what's real versus simulated, and a bias for building something
+        tangible over describing an idea.</p>
+
+      <div class="trio">
+        <div class="trio-card">
+          <h3>Research narrowed the target</h3>
+          <p class="desc">Press releases, LinkedIn posts, and job postings pointed to a specific gap worth prototyping.
+          </p>
+          <ol>
+            <li><span class="num">01</span> Traced Hippocratic AI's move from single agents to Agentic Orchestrators.
+            </li>
+            <li><span class="num">02</span> Read their posted analyst roles to see data quality was 40–50% of the job,
+              not an afterthought.</li>
+            <li><span class="num">03</span> Picked "prove the orchestration lift" as the one workflow worth building end
+              to end.</li>
+          </ol>
+        </div>
+        <div class="trio-card">
+          <h3>No real patient data? Simulated it.</h3>
+          <p class="desc">No PHI access, no company data room — so the constraint became the design.</p>
+          <ol>
+            <li><span class="num">01</span> Built a seeded synthetic-cohort generator instead of waiting for real
+              records.</li>
+            <li><span class="num">02</span> Modeled risk tiers, channel preference, and prior-readmission history from
+              realistic distributions.</li>
+            <li><span class="num">03</span> Kept every synthetic assumption visible in an on-page methodology section,
+              not buried in code.</li>
+          </ol>
+        </div>
+        <div class="trio-card">
+          <h3>AI accelerated the build</h3>
+          <p class="desc">AI helped move faster; the judgment on what to measure and how to frame it stayed mine.</p>
+          <ol>
+            <li><span class="num">01</span> Used Claude to scaffold the simulation logic and chart rendering quickly.
+            </li>
+            <li><span class="num">02</span> Pressure-tested the assignment rules and outcome formulas for realism.</li>
+            <li><span class="num">03</span> Rewrote the framing and caveats myself so the story stays honest about
+              what's synthetic.</li>
+          </ol>
+        </div>
+      </div>
+    </section>
+
+    <!-- HOW IT WORKS -->
+    <section class="block" id="process">
+      <div class="eyebrow">How it works</div>
+      <h2>From a synthetic cohort to a measurable lift</h2>
+      <p class="lead">Three steps, run entirely in the browser above.</p>
+      <div class="steps">
+        <div class="step">
+          <div class="num">1</div>
+          <h3>Generate the cohort</h3>
+          <p>A seeded random generator creates synthetic patients with a risk score, comorbidity count, channel
+            preference, and readmission history.</p>
+        </div>
+        <div class="step">
+          <div class="num">2</div>
+          <h3>Run two policies</h3>
+          <p>Every patient is routed twice: once to a random agent, once to the agent matched to their risk profile —
+            same person, same noise, two strategies.</p>
+        </div>
+        <div class="step">
+          <div class="num">3</div>
+          <h3>Compare the outcomes</h3>
+          <p>Readmission risk, engagement resolution, and time-to-engagement are aggregated and charted, naive against
+            orchestrated, by tier, channel, and agent.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- WHY ME -->
+    <section class="block" id="whyme">
+      <div class="eyebrow">Why me</div>
+      <h2>Data infrastructure background, aimed at agentic AI</h2>
+      <p class="lead">I'm a Lead Data Analyst at the Wyoming Department of Health, where my work centers on cloud
+        modernization and building data infrastructure the rest of the organization relies on for decisions.</p>
+      <div class="whyme-grid">
+        <div class="stat-card">
+          <div class="stat">Cloud &amp; infra</div>
+          <p>Background modernizing cloud systems and building reliable data pipelines for public-health decision-making
+            — the same muscle an orchestration layer needs underneath it.</p>
+        </div>
+        <div class="stat-card">
+          <div class="stat">Curious, not credentialed-in</div>
+          <p>Genuinely interested in agentic AI before this role came up — this prototype exists because the problem was
+            interesting, not because a recruiter asked for a work sample.</p>
+        </div>
+        <div class="stat-card">
+          <div class="stat">Bias for building</div>
+          <p><span class="editable">[Add a real example here — e.g. a specific system you modernized or a reporting
+              process you automated, with a concrete outcome.]</span></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- CONTACT -->
+    <section class="block" id="contact">
+      <div class="eyebrow">Contact</div>
+      <h2>If this sparked the right kind of conversation, let's talk.</h2>
+      <div class="contact-row">
+        <div>
+          <div class="contact-name">Srikanth Parvathala</div>
+          <div class="contact-links">
+            <a href="mailto:srikanth.parvathala7@gmail.com">srikanth.parvathala7@gmail.com ↗</a>
+            <a href="https://www.linkedin.com/in/srikanthparvathala" target="_blank">Srikanth Parvathala on LinkedIn ↗</a>
+          </div>
+        </div>
+        <a href="https://www.linkedin.com/in/srikanthparvathala" target="_blank" title="Srikanth Parvathala on LinkedIn" style="text-decoration:none;">
+          <div class="avatar-badge" id="avatarBadge">
+            <img id="linkedinPhoto"
+              src=""
+              alt="Srikanth Parvathala"
+              style="width:100%;height:100%;border-radius:50%;object-fit:cover;display:none;"
+              onerror="this.style.display='none';document.getElementById('avatarInitial').style.display='block';"
+              onload="this.style.display='block';document.getElementById('avatarInitial').style.display='none';"
+            />
+            <span id="avatarInitial">S</span>
+          </div>
+        </a>
+      </div>
+    </section>
+
+  </div>
+
+  <footer class="principle">
+    <div class="wrap">
+      <div class="principle-label">Principle</div>
+      <div class="principle-text">Build the thing that proves the point, rather than describing why it would work.</div>
+    </div>
+  </footer>
+
+  <script>
+    /* =========================================================
+       Embedded dashboard logic (mirrors the standalone prototype)
+       ========================================================= */
+    (function () {
+      const host = document.getElementById('embedApp');
+      host.innerHTML = `
+    <div class="e-wrap">
+      <div class="e-tabs" id="eTabs">
+        <button data-tab="overview" class="active">Overview</button>
+        <button data-tab="tier">By risk tier</button>
+        <button data-tab="channel">By channel</button>
+        <button data-tab="agents">Agent mix</button>
+        <button data-tab="records">Patient records</button>
+        <button data-tab="method">Methodology</button>
+      </div>
+      <div class="e-controls">
+        <label>Cohort size: <strong id="eNLabel">800</strong>
+          <input type="range" id="eNSlider" min="200" max="2000" step="100" value="800">
+        </label>
+        <button class="e-btn" id="eRegenBtn">↻ Regenerate cohort</button>
+        <span class="e-meta" id="eSeedLabel">Seed #7 · 800 synthetic patients, no real records</span>
+      </div>
+
+      <div class="e-section active" id="e-tab-overview">
+        <div class="e-kpi-grid" id="eKpiGrid"></div>
+        <div class="e-chart-card">
+          <div class="e-chart-title">Readmission rate by risk tier</div>
+          <div class="e-chart-sub">Does routing to a better-fit agent lower expected readmission risk within each tier?</div>
+          <svg id="eChartOverviewMain" width="100%" height="200"></svg>
+          <div class="e-legend"><span><span class="e-swatch" style="background:var(--e-amber)"></span>Naive</span><span><span class="e-swatch" style="background:var(--e-teal)"></span>Orchestrated</span></div>
+        </div>
+        <div class="e-insight" id="eOverviewInsight"></div>
+      </div>
+
+      <div class="e-section" id="e-tab-tier">
+        <div class="e-chart-card">
+          <div class="e-chart-title">Readmission rate by risk tier</div>
+          <svg id="eChartTierReadmit" width="100%" height="190"></svg>
+          <div class="e-legend"><span><span class="e-swatch" style="background:var(--e-amber)"></span>Naive</span><span><span class="e-swatch" style="background:var(--e-teal)"></span>Orchestrated</span></div>
+        </div>
+        <div class="e-chart-card">
+          <div class="e-chart-title">Engagement resolution by risk tier</div>
+          <svg id="eChartTierResolution" width="100%" height="190"></svg>
+          <div class="e-legend"><span><span class="e-swatch" style="background:var(--e-amber)"></span>Naive</span><span><span class="e-swatch" style="background:var(--e-teal)"></span>Orchestrated</span></div>
+        </div>
+      </div>
+
+      <div class="e-section" id="e-tab-channel">
+        <div class="e-chart-card">
+          <div class="e-chart-title">Time to engagement by contact channel</div>
+          <svg id="eChartChannelHours" width="100%" height="200"></svg>
+          <div class="e-legend"><span><span class="e-swatch" style="background:var(--e-amber)"></span>Naive</span><span><span class="e-swatch" style="background:var(--e-teal)"></span>Orchestrated</span></div>
+        </div>
+        <div class="e-chart-card">
+          <div class="e-chart-title">Cohort distribution by channel</div>
+          <svg id="eChartChannelDist" width="100%" height="170"></svg>
+        </div>
+      </div>
+
+      <div class="e-section" id="e-tab-agents">
+        <div class="e-chart-card">
+          <div class="e-chart-title">Agent assignment volume, naive vs. orchestrated</div>
+          <div class="e-chart-sub">Random assignment spreads patients evenly. Orchestration concentrates high-risk, previously-readmitted patients on clinical agents.</div>
+          <svg id="eChartAgentMix" width="100%" height="210"></svg>
+          <div class="e-legend"><span><span class="e-swatch" style="background:var(--e-amber)"></span>Naive</span><span><span class="e-swatch" style="background:var(--e-teal)"></span>Orchestrated</span></div>
+        </div>
+        <div class="e-insight" id="eAgentInsight"></div>
+      </div>
+
+      <div class="e-section" id="e-tab-records">
+        <div class="e-chips" id="eTierChips">
+          <span class="e-chip active" data-tier="All">All tiers</span>
+          <span class="e-chip" data-tier="Low">Low</span>
+          <span class="e-chip" data-tier="Medium">Medium</span>
+          <span class="e-chip" data-tier="High">High</span>
+        </div>
+        <div class="e-card">
+          <div class="e-table-wrap">
+            <table>
+              <thead><tr>
+                <th>ID</th><th>Age</th><th>Risk tier</th><th>Prior readmit</th><th>Channel</th>
+                <th>Naive agent</th><th>Orchestrated agent</th><th>Readmit prob (naive → orch.)</th>
+              </tr></thead>
+              <tbody id="eRecordsBody"></tbody>
+            </table>
+          </div>
+          <div style="text-align:center; margin-top:12px;">
+            <button class="e-btn" id="eLoadMoreBtn" style="background:var(--e-surface); color:var(--e-ink); border:1px solid var(--e-line);">Show 15 more</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="e-section" id="e-tab-method">
+        <div class="e-card e-method">
+          <p>Every patient here is synthetic: risk score, age, comorbidity count, prior-readmission flag, and channel preference are drawn from distributions chosen for this prototype, not from any real health system, payer, or Hippocratic AI data.</p>
+          <p>Each patient runs through <strong>two</strong> outreach policies on the same profile: a naive policy assigning one of four agent types at random, and an orchestrated policy routing each patient to the agent matched to their risk tier and readmission history.</p>
+          <p>Outcomes are generated from formulas that reward a good agent-patient match and add random noise. A production version would use real observed outcomes, a validated uplift model, and confidence intervals rather than point estimates.</p>
+        </div>
+      </div>
+    </div>
+  `;
+
+      // ---- simulation (identical logic to the standalone prototype) ----
+      function mulberry32(seed) {
+        let a = seed;
+        return function () {
+          a |= 0; a = (a + 0x6d2b79f5) | 0;
+          let t = Math.imul(a ^ (a >>> 15), 1 | a);
+          t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+          return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+        };
+      }
+      function gaussian(rng, mean, sd) {
+        const u1 = Math.max(rng(), 1e-6), u2 = rng();
+        return mean + Math.sqrt(-2 * Math.log(u1)) * Math.cos(2 * Math.PI * u2) * sd;
+      }
+      function clamp(x, lo, hi) { return Math.max(lo, Math.min(hi, x)); }
+
+      const AGENTS = { rapid: "AI Rapid Response", nurse: "Nurse Co-Pilot", chronic: "AI Chronic Care Management", frontdoor: "AI Front Door" };
+      const AGENT_IDS = Object.keys(AGENTS);
+      const CHANNELS = ["Call", "Text", "App"];
+      const TIERS = ["Low", "Medium", "High"];
+
+      function riskTierOf(r) { return r >= 0.66 ? "High" : r >= 0.33 ? "Medium" : "Low"; }
+      function bestAgentFor(p) {
+        if (p.riskTier === "High") return p.priorReadmit ? "rapid" : "nurse";
+        if (p.riskTier === "Medium") return "chronic";
+        return "frontdoor";
+      }
+      function generateCohort(n, seed) {
+        const rng = mulberry32(seed);
+        const patients = [];
+        for (let i = 0; i < n; i++) {
+          const riskScore = clamp(gaussian(rng, 0.42, 0.22), 0.02, 0.98);
+          const riskTier = riskTierOf(riskScore);
+          const priorReadmit = rng() < riskScore * 0.32;
+          const age = Math.round(clamp(gaussian(rng, 66, 13), 24, 96));
+          const channel = CHANNELS[Math.floor(rng() * CHANNELS.length)];
+          const naiveAgent = AGENT_IDS[Math.floor(rng() * AGENT_IDS.length)];
+          const orchestratedAgent = bestAgentFor({ riskTier, priorReadmit });
+          const outcomesFor = (agentId) => {
+            const match = agentId === orchestratedAgent ? 1 : 0.3;
+            const engagementSuccessProb = clamp(0.45 + match * 0.35 + gaussian(rng, 0, 0.05), 0.05, 0.97);
+            const hoursToEngage = clamp(60 - match * 35 + gaussian(rng, 0, 8), 2, 120);
+            const baseReadmitProb = clamp(0.10 + riskScore * 0.35, 0.02, 0.6);
+            const readmitProb = clamp(baseReadmitProb * (1 - 0.45 * engagementSuccessProb), 0.01, 0.6);
+            return { engagementSuccessProb, hoursToEngage, readmitProb };
+          };
+          patients.push({
+            id: i + 1, age, riskScore, riskTier, priorReadmit, channel,
+            naiveAgent, orchestratedAgent,
+            naive: outcomesFor(naiveAgent),
+            orchestrated: outcomesFor(orchestratedAgent)
+          });
+        }
+        return patients;
+      }
+      function mean(arr) { return arr.length ? arr.reduce((a, b) => a + b, 0) / arr.length : 0; }
+      function pct(x) { return (x * 100).toFixed(1) + "%"; }
+      function overallKpis(patients) {
+        return {
+          readmit: { naive: mean(patients.map(p => p.naive.readmitProb)), orchestrated: mean(patients.map(p => p.orchestrated.readmitProb)) },
+          resolution: { naive: mean(patients.map(p => p.naive.engagementSuccessProb)), orchestrated: mean(patients.map(p => p.orchestrated.engagementSuccessProb)) },
+          hours: { naive: mean(patients.map(p => p.naive.hoursToEngage)), orchestrated: mean(patients.map(p => p.orchestrated.hoursToEngage)) }
+        };
+      }
+      function byGroup(patients, keyFn, metricFn, order) {
+        const groups = {};
+        patients.forEach(p => {
+          const k = keyFn(p);
+          if (!groups[k]) groups[k] = { naive: [], orchestrated: [] };
+          groups[k].naive.push(metricFn(p, "naive"));
+          groups[k].orchestrated.push(metricFn(p, "orchestrated"));
+        });
+        let rows = Object.entries(groups).map(([k, v]) => ({ group: k, Naive: mean(v.naive), Orchestrated: mean(v.orchestrated) }));
+        if (order) rows = rows.sort((a, b) => order.indexOf(a.group) - order.indexOf(b.group));
+        return rows;
+      }
+      function agentCounts(patients) {
+        const counts = {}; AGENT_IDS.forEach(a => counts[a] = { Naive: 0, Orchestrated: 0 });
+        patients.forEach(p => { counts[p.naiveAgent].Naive++; counts[p.orchestratedAgent].Orchestrated++; });
+        return AGENT_IDS.map(a => ({ group: AGENTS[a], Naive: counts[a].Naive, Orchestrated: counts[a].Orchestrated }));
+      }
+
+      function renderGroupedBar(svgEl, data, opts) {
+        opts = opts || {};
+        const asPct = opts.asPct, suffix = opts.suffix || "";
+        const svg = svgEl;
+        const width = svg.clientWidth || 560;
+        const height = parseInt(svg.getAttribute("height")) || 200;
+        const margin = { top: 10, right: 10, bottom: 26, left: asPct ? 36 : 32 };
+        const innerW = width - margin.left - margin.right;
+        const innerH = height - margin.top - margin.bottom;
+        const maxVal = Math.max(...data.map(d => Math.max(d.Naive, d.Orchestrated))) * 1.15 || 1;
+        const groupW = innerW / data.length;
+        const barW = Math.min(30, groupW / 2 - 8);
+        const ns = "http://www.w3.org/2000/svg";
+        while (svg.firstChild) svg.removeChild(svg.firstChild);
+        svg.setAttribute("viewBox", `0 0 ${width} ${height}`);
+        const ticks = 4;
+        for (let i = 0; i <= ticks; i++) {
+          const v = maxVal * (i / ticks);
+          const y = margin.top + innerH - (v / maxVal) * innerH;
+          const line = document.createElementNS(ns, "line");
+          line.setAttribute("x1", margin.left); line.setAttribute("x2", width - margin.right);
+          line.setAttribute("y1", y); line.setAttribute("y2", y);
+          line.setAttribute("stroke", "#DCE0E5"); line.setAttribute("stroke-width", "1");
+          svg.appendChild(line);
+          const label = document.createElementNS(ns, "text");
+          label.setAttribute("x", margin.left - 7); label.setAttribute("y", y + 4);
+          label.setAttribute("text-anchor", "end"); label.setAttribute("font-size", "10");
+          label.setAttribute("fill", "#5B6472"); label.setAttribute("font-family", "Inter, sans-serif");
+          label.textContent = asPct ? Math.round(v * 100) + "%" : Math.round(v);
+          svg.appendChild(label);
+        }
+        data.forEach((d, i) => {
+          const gx = margin.left + i * groupW;
+          const bars = [["Naive", "#B8752B", d.Naive], ["Orchestrated", "#1F8A70", d.Orchestrated]];
+          bars.forEach(([key, color, val], j) => {
+            const h = (val / maxVal) * innerH;
+            const x = gx + groupW / 2 - barW - 4 + j * (barW + 8);
+            const y = margin.top + innerH - h;
+            const rect = document.createElementNS(ns, "rect");
+            rect.setAttribute("x", x); rect.setAttribute("y", y);
+            rect.setAttribute("width", barW); rect.setAttribute("height", Math.max(h, 1));
+            rect.setAttribute("fill", color); rect.setAttribute("rx", "2");
+            const title = document.createElementNS(ns, "title");
+            title.textContent = `${key}: ${asPct ? pct(val) : val.toFixed(1) + suffix}`;
+            rect.appendChild(title);
+            svg.appendChild(rect);
+          });
+          const label = document.createElementNS(ns, "text");
+          label.setAttribute("x", gx + groupW / 2); label.setAttribute("y", height - 7);
+          label.setAttribute("text-anchor", "middle"); label.setAttribute("font-size", "11");
+          label.setAttribute("fill", "#5B6472"); label.setAttribute("font-family", "Inter, sans-serif");
+          label.textContent = d.group;
+          svg.appendChild(label);
+        });
+      }
+
+      let state = { n: 800, seed: 7, tierFilter: "All", tableLimit: 15 };
+      let patients = [];
+      function recompute() { patients = generateCohort(state.n, state.seed); }
+
+      function renderKPIs() {
+        const k = overallKpis(patients);
+        const grid = host.querySelector("#eKpiGrid");
+        grid.innerHTML = "";
+        const specs = [
+          { label: "30-day readmission rate", naive: k.readmit.naive, orch: k.readmit.orchestrated, fmt: pct, better: "lower" },
+          { label: "Engagement resolution rate", naive: k.resolution.naive, orch: k.resolution.orchestrated, fmt: pct, better: "higher" },
+          { label: "Avg. time to engagement", naive: k.hours.naive, orch: k.hours.orchestrated, fmt: (x) => x.toFixed(1) + "h", better: "lower" }
+        ];
+        specs.forEach(s => {
+          const delta = s.orch - s.naive;
+          const improved = s.better === "lower" ? delta < 0 : delta > 0;
+          const pctChange = Math.abs((delta / s.naive) * 100).toFixed(0);
+          const dirWord = s.better === "lower" ? "lower" : "higher";
+          const card = document.createElement("div");
+          card.className = "e-card";
+          card.innerHTML = `
+        <div class="e-kpi-label">${s.label}</div>
+        <div class="e-kpi-values">
+          <div class="e-kpi-col naive"><div class="e-tag">Naive</div><div class="e-kpi-num">${s.fmt(s.naive)}</div></div>
+          <div class="e-arrow">→</div>
+          <div class="e-kpi-col orch"><div class="e-tag">Orchestrated</div><div class="e-kpi-num">${s.fmt(s.orch)}</div></div>
+        </div>
+        <div class="e-kpi-delta ${improved ? 'good' : 'bad'}">${pctChange}% ${dirWord} under orchestration</div>
+      `;
+          grid.appendChild(card);
+        });
+      }
+      function renderOverview() {
+        renderKPIs();
+        renderGroupedBar(host.querySelector("#eChartOverviewMain"),
+          byGroup(patients, p => p.riskTier, (p, k) => p[k].readmitProb, TIERS), { asPct: true });
+        const k = overallKpis(patients);
+        const liftPct = Math.abs(((k.readmit.orchestrated - k.readmit.naive) / k.readmit.naive) * 100).toFixed(0);
+        host.querySelector("#eOverviewInsight").textContent =
+          `In this cohort, orchestrated routing lowers expected 30-day readmission risk by about ${liftPct}% relative to random assignment.`;
+      }
+      function renderTier() {
+        renderGroupedBar(host.querySelector("#eChartTierReadmit"),
+          byGroup(patients, p => p.riskTier, (p, k) => p[k].readmitProb, TIERS), { asPct: true });
+        renderGroupedBar(host.querySelector("#eChartTierResolution"),
+          byGroup(patients, p => p.riskTier, (p, k) => p[k].engagementSuccessProb, TIERS), { asPct: true });
+      }
+      function renderChannel() {
+        renderGroupedBar(host.querySelector("#eChartChannelHours"),
+          byGroup(patients, p => p.channel, (p, k) => p[k].hoursToEngage, CHANNELS), { suffix: "h" });
+        const dist = CHANNELS.map(c => ({ group: c, Naive: patients.filter(p => p.channel === c).length, Orchestrated: 0 }));
+        renderGroupedBar(host.querySelector("#eChartChannelDist"), dist, {});
+      }
+      function renderAgents() {
+        renderGroupedBar(host.querySelector("#eChartAgentMix"), agentCounts(patients), {});
+        host.querySelector("#eAgentInsight").textContent =
+          "Random assignment spreads volume evenly across agent types. Orchestration concentrates Nurse Co-Pilot and AI Rapid Response on high-risk, previously-readmitted patients, and routes stable patients to AI Front Door.";
+      }
+      function renderRecords() {
+        const filtered = state.tierFilter === "All" ? patients : patients.filter(p => p.riskTier === state.tierFilter);
+        const rows = filtered.slice(0, state.tableLimit);
+        const body = host.querySelector("#eRecordsBody");
+        body.innerHTML = rows.map(p => `
+      <tr>
+        <td>${p.id}</td><td>${p.age}</td><td>${p.riskTier}</td><td>${p.priorReadmit ? "Yes" : "No"}</td><td>${p.channel}</td>
+        <td>${AGENTS[p.naiveAgent]}</td><td>${AGENTS[p.orchestratedAgent]}</td>
+        <td class="mono">${pct(p.naive.readmitProb)} → ${pct(p.orchestrated.readmitProb)}</td>
+      </tr>`).join("");
+        host.querySelector("#eLoadMoreBtn").style.display = filtered.length > state.tableLimit ? "inline-flex" : "none";
+      }
+      function renderAll() { renderOverview(); renderTier(); renderChannel(); renderAgents(); renderRecords(); }
+
+      host.querySelector("#eTabs").addEventListener("click", (e) => {
+        const btn = e.target.closest("button[data-tab]");
+        if (!btn) return;
+        host.querySelectorAll(".e-tabs button").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        host.querySelectorAll(".e-section").forEach(s => s.classList.remove("active"));
+        host.querySelector("#e-tab-" + btn.dataset.tab).classList.add("active");
+      });
+      host.querySelector("#eNSlider").addEventListener("input", (e) => {
+        host.querySelector("#eNLabel").textContent = e.target.value;
+      });
+      host.querySelector("#eNSlider").addEventListener("change", (e) => {
+        state.n = Number(e.target.value); state.tableLimit = 15;
+        recompute(); renderAll();
+        host.querySelector("#eSeedLabel").textContent = `Seed #${state.seed} · ${state.n} synthetic patients, no real records`;
+      });
+      host.querySelector("#eRegenBtn").addEventListener("click", () => {
+        state.seed += 1; state.tableLimit = 15;
+        recompute(); renderAll();
+        host.querySelector("#eSeedLabel").textContent = `Seed #${state.seed} · ${state.n} synthetic patients, no real records`;
+      });
+      host.querySelector("#eTierChips").addEventListener("click", (e) => {
+        const chip = e.target.closest(".e-chip");
+        if (!chip) return;
+        host.querySelectorAll("#eTierChips .e-chip").forEach(c => c.classList.remove("active"));
+        chip.classList.add("active");
+        state.tierFilter = chip.dataset.tier; state.tableLimit = 15;
+        renderRecords();
+      });
+      host.querySelector("#eLoadMoreBtn").addEventListener("click", () => {
+        state.tableLimit += 15; renderRecords();
+      });
+      window.addEventListener("resize", renderAll);
+
+      recompute();
+      renderAll();
+    })();
+
+    // ---- Dark / Light mode toggle ----
+    (function () {
+      const btn = document.getElementById('themeToggle');
+      const icon = document.getElementById('themeIcon');
+      const label = document.getElementById('themeLabel');
+      const html = document.documentElement;
+
+      function applyTheme(theme) {
+        if (theme === 'light') {
+          html.setAttribute('data-theme', 'light');
+          icon.textContent = '☀️';
+          label.textContent = 'Dark';
+        } else {
+          html.removeAttribute('data-theme');
+          icon.textContent = '🌙';
+          label.textContent = 'Light';
+        }
+        localStorage.setItem('theme', theme);
+      }
+
+      // Restore saved preference
+      const saved = localStorage.getItem('theme') || 'dark';
+      applyTheme(saved);
+
+      btn.addEventListener('click', () => {
+        const current = html.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
+        applyTheme(current === 'light' ? 'dark' : 'light');
+      });
+    })();
+
+    // ---- LinkedIn profile picture ----
+    (function () {
+      const img = document.getElementById('linkedinPhoto');
+      if (!img) return;
+      // unavatar.io pulls public profile photos by LinkedIn vanity URL
+      img.src = 'https://unavatar.io/linkedin/srikanthparvathala';
+    })();
+  </script>
+</body>
+
+</html>
