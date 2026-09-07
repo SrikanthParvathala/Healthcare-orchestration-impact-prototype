@@ -36,9 +36,27 @@ jobs:
       - name: Build React app
         run: npm run build
 
-      # Copy the standalone pitch page into the dist folder too
-      - name: Copy pitch page into dist
-        run: cp hippocratic-orchestration-pitch.html dist/
+      # Move built files into the correct subfolder so GitHub Pages
+      # serves the React app at /Srikanth/DataOrchestration/Prototype/
+      - name: Restructure dist for GitHub Pages
+        run: |
+          mkdir -p dist/Srikanth/DataOrchestration/Prototype
+          cp dist/assets dist/Srikanth/DataOrchestration/Prototype/ -r 2>/dev/null || true
+          cp dist/index.html dist/Srikanth/DataOrchestration/Prototype/ 2>/dev/null || true
+          cp hippocratic-orchestration-pitch.html dist/
+          # Add a root index that redirects to the pitch page
+          cat > dist/index.html << 'EOF'
+          <!DOCTYPE html>
+          <html>
+          <head>
+            <meta http-equiv="refresh" content="0; url=hippocratic-orchestration-pitch.html" />
+            <title>Redirecting...</title>
+          </head>
+          <body>
+            <p>Redirecting to <a href="hippocratic-orchestration-pitch.html">pitch page</a>...</p>
+          </body>
+          </html>
+          EOF
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
@@ -51,3 +69,4 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+
