@@ -39,12 +39,10 @@ Same patients. Same noise. Two strategies. Measurable lift.
 
 ## Live Demo
 
-This repo contains two artifacts that can both be served locally:
-
 | Artifact | URL | Description |
 |---|---|---|
-| **Pitch page** | `http://localhost:4000/hippocratic-orchestration-pitch.html` | Full narrative page with embedded live dashboard |
-| **React dashboard** | `http://localhost:3000/Srikanth/DataOrchestration/Prototype/` | Standalone Vite + React dashboard app |
+| **Pitch page** | [hippocratic-orchestration-pitch.html](https://srikanthparvathala.github.io/Healthcare-orchestration-impact-prototype/hippocratic-orchestration-pitch.html) | Full narrative page with embedded live dashboard |
+| **React dashboard** | [Prototype](https://srikanthparvathala.github.io/Healthcare-orchestration-impact-prototype/Srikanth/DataOrchestration/Prototype/) | Standalone Vite + React dashboard app |
 
 > All computation is **client-side only** — no server, no database, no real patient records.
 
@@ -110,6 +108,15 @@ npx serve . --listen 4000
 ```
 
 Open: **http://localhost:4000/hippocratic-orchestration-pitch.html**
+
+### Deployed (GitHub Pages)
+
+The site is automatically built and deployed on every push to `main`:
+
+| Page | Public URL |
+|---|---|
+| **Pitch page** | https://srikanthparvathala.github.io/Healthcare-orchestration-impact-prototype/hippocratic-orchestration-pitch.html |
+| **React dashboard** | https://srikanthparvathala.github.io/Healthcare-orchestration-impact-prototype/Srikanth/DataOrchestration/Prototype/ |
 
 ---
 
