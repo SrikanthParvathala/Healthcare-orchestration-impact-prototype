@@ -435,7 +435,7 @@ export default function OrchestrationImpactDashboard() {
                 lineHeight: 1.5,
               }}
             >
-              A synthetic cohort walking through two outreach policies —
+              A synthetic cohort walking through two outreach policies;
               assigning any available agent at random, versus routing each
               patient to the agent suited to their risk profile. Same
               patients, same noise, two orchestration strategies.
@@ -685,7 +685,7 @@ export default function OrchestrationImpactDashboard() {
                 <em>naive</em> policy that assigns one of four agent types at
                 random, and an <em>orchestrated</em> policy that routes each
                 patient to the agent type matched to their risk tier and
-                readmission history — a simplified stand-in for a
+                readmission history; a simplified stand-in for a
                 supervising coordination layer.
               </p>
               <p>
