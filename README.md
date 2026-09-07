@@ -1,7 +1,7 @@
 # Healthcare Orchestration Impact Prototype
 
 > **Does routing patients to the right AI agent actually move outcomes?**
-> A working analytics prototype that measures the lift from intelligent agent orchestration versus naive random assignment — built in response to Hippocratic AI's shift from single voice agents to coordinated *Agentic Orchestrators*.
+> A working analytics prototype that measures the lift from intelligent agent orchestration versus naive random assignment; built in response to Hippocratic AI's shift from single voice agents to coordinated *Agentic Orchestrators*.
 
 ---
 
@@ -24,7 +24,7 @@
 
 ## Overview
 
-In 2026, Hippocratic AI moved from selling individual voice agents to selling **Agentic Orchestrators** — coordinated teams of AI agents designed to move whole-population outcomes like 30-day readmission rates, HEDIS measures, and CMS Star Ratings. That's a much bigger claim than "the agent completed the call," and it raises a specific data question:
+In 2026, Hippocratic AI moved from selling individual voice agents to selling **Agentic Orchestrators**, coordinated teams of AI agents designed to move whole-population outcomes like 30-day readmission rates, HEDIS measures, and CMS Star Ratings. That's a much bigger claim than "the agent completed the call," and it raises a specific data question:
 
 > **How do you measure whether the coordination layer is actually earning its keep?**
 
