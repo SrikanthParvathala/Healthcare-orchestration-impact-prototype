@@ -41,7 +41,7 @@ Same patients. Same noise. Two strategies. Measurable lift.
 
 | Artifact | URL | Description |
 |---|---|---|
-| **Pitch page** | [hippocratic-orchestration-pitch.html](https://srikanthparvathala.github.io/Healthcare-orchestration-impact-prototype/hippocratic-orchestration.html) | Full narrative page with embedded live dashboard |
+| **Pitch page** | [hippocratic-orchestration-pitch.html](https://srikanthparvathala.github.io/Healthcare-orchestration-impact-prototype/hippocratic-orchestration-pitch.html) | Full narrative page with embedded live dashboard |
 | **React dashboard** | [Prototype](https://srikanthparvathala.github.io/Healthcare-orchestration-impact-prototype/Srikanth/DataOrchestration/Prototype/) | Standalone Vite + React dashboard app |
 
 > All computation is **client-side only** — no server, no database, no real patient records.
@@ -53,7 +53,7 @@ Same patients. Same noise. Two strategies. Measurable lift.
 ```
 Healthcare-orchestration-impact-prototype/
 │
-├── hippocratic-orchestration.html         # Self-contained page with embedded dashboard
+├── hippocratic-orchestration-pitch.html   # Self-contained page with embedded dashboard
 │                                          # Dark/light mode toggle, LinkedIn profile, methodology
 │
 ├── orchestration-impact-dashboard.jsx     # Original JSX prototype (source reference)
@@ -107,7 +107,7 @@ Open: **http://localhost:3000/Srikanth/DataOrchestration/Prototype/**
 npx serve . --listen 4000
 ```
 
-Open: **http://localhost:4000/hippocratic-orchestration.html**
+Open: **http://localhost:4000/hippocratic-orchestration-pitch.html**
 
 ### Deployed (GitHub Pages)
 
@@ -115,7 +115,7 @@ The site is automatically built and deployed on every push to `main`:
 
 | Page | Public URL |
 |---|---|
-| **Pitch page** | https://srikanthparvathala.github.io/Healthcare-orchestration-impact-prototype/hippocratic-orchestration.html |
+| **Pitch page** | https://srikanthparvathala.github.io/Healthcare-orchestration-impact-prototype/hippocratic-orchestration-pitch.html |
 | **React dashboard** | https://srikanthparvathala.github.io/Healthcare-orchestration-impact-prototype/Srikanth/DataOrchestration/Prototype/ |
 
 ---
@@ -213,7 +213,7 @@ Outcomes are averaged across the cohort and broken down by:
 - **Paginated patient table** — zebra striping, hover highlight, risk tier badges, "Load 20 more"
 - **Methodology section** — 2×2 card grid with honest caveats about synthetic data
 
-### Main Page (`hippocratic-orchestration-pitch.html`)
+### Pitch Page (`hippocratic-orchestration-pitch.html`)
 
 - Self-contained single HTML file — **zero build step required**, open directly in a browser
 - **Dark / Light mode toggle** in the nav bar with `localStorage` persistence
